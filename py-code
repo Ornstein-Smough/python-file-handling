@@ -1,0 +1,179 @@
+"""
+Python File Handling Mini Project
+---------------------------------
+Covers:
+1. Save/Load Student Grades
+2. Word/Line/Character Counter in a File
+3. Save Shopping List to File
+4. Mini Project: Persistent To-Do List
+"""
+
+import os
+
+# -------------------------------
+# 1. Save/Load Student Grades
+# -------------------------------
+def student_grades():
+    filename = "grades.txt"
+    while True:
+        print("\nStudent Grades Manager")
+        print("Options: [add] [view] [exit]")
+        choice = input("Choose: ").strip().lower()
+
+        if choice == "add":
+            name = input("Enter student name: ").strip()
+            grade = input("Enter grade: ").strip()
+            with open(filename, "a") as f:
+                f.write(f"{name},{grade}\n")
+            print("Grade saved.")
+
+        elif choice == "view":
+            if os.path.exists(filename):
+                with open(filename, "r") as f:
+                    lines = f.readlines()
+                    if lines:
+                        print("\nStudent Grades:")
+                        for line in lines:
+                            name, grade = line.strip().split(",")
+                            print(f"{name}: {grade}")
+                    else:
+                        print("No grades found.")
+            else:
+                print("No grades file found.")
+
+        elif choice == "exit":
+            break
+        else:
+            print("Invalid choice.")
+
+# -------------------------------
+# 2. Word/Line/Character Counter
+# -------------------------------
+def file_counter():
+    filename = input("Enter filename to analyze: ").strip()
+    if not os.path.exists(filename):
+        print("File not found.")
+        return
+
+    with open(filename, "r") as f:
+        text = f.read()
+        words = text.split()
+        lines = text.splitlines()
+        chars = len(text)
+
+    print("\nFile Statistics:")
+    print("Lines:", len(lines))
+    print("Words:", len(words))
+    print("Characters:", chars)
+
+# -------------------------------
+# 3. Save Shopping List to File
+# -------------------------------
+def shopping_list():
+    filename = "shopping_list.txt"
+    while True:
+        print("\nShopping List Options: [add] [view] [exit]")
+        choice = input("Choose: ").strip().lower()
+
+        if choice == "add":
+            item = input("Enter item to add: ").strip()
+            with open(filename, "a") as f:
+                f.write(item + "\n")
+            print("Item added.")
+
+        elif choice == "view":
+            if os.path.exists(filename):
+                with open(filename, "r") as f:
+                    items = [line.strip() for line in f]
+                if items:
+                    print("Shopping List:")
+                    for item in items:
+                        print("-", item)
+                else:
+                    print("Shopping list is empty.")
+            else:
+                print("No shopping list found.")
+
+        elif choice == "exit":
+            break
+        else:
+            print("Invalid choice.")
+
+# -------------------------------
+# 4. Mini Project: Persistent To-Do List
+# -------------------------------
+def persistent_todo():
+    filename = "todo.txt"
+
+    # Load existing tasks
+    tasks = []
+    if os.path.exists(filename):
+        with open(filename, "r") as f:
+            for line in f:
+                task, done = line.strip().split("|")
+                tasks.append((task, done == "True"))
+
+    while True:
+        print("\nTo-Do List:")
+        for i, (task, done) in enumerate(tasks, start=1):
+            status = "✔" if done else "✘"
+            print(f"{i}. {task} [{status}]")
+
+        print("\nOptions: [add] [complete] [save & exit]")
+        choice = input("Choose: ").strip().lower()
+
+        if choice == "add":
+            task = input("Enter new task: ").strip()
+            tasks.append((task, False))
+
+        elif choice == "complete":
+            try:
+                num = int(input("Enter task number to mark complete: ").strip())
+                if 1 <= num <= len(tasks):
+                    task, _ = tasks[num - 1]
+                    tasks[num - 1] = (task, True)
+                    print("Task marked complete.")
+                else:
+                    print("Invalid task number.")
+            except ValueError:
+                print("Enter a valid number.")
+
+        elif choice == "save & exit":
+            with open(filename, "w") as f:
+                for task, done in tasks:
+                    f.write(f"{task}|{done}\n")
+            print("Tasks saved. Goodbye!")
+            break
+        else:
+            print("Invalid choice.")
+
+# -------------------------------
+# Main Menu
+# -------------------------------
+def main():
+    while True:
+        print("\n===== File Handling Project =====")
+        print("1. Save/Load Student Grades")
+        print("2. Word/Line/Character Counter")
+        print("3. Save Shopping List")
+        print("4. Persistent To-Do List (Mini Project)")
+        print("5. Exit")
+
+        choice = input("Choose an option (1-5): ").strip()
+
+        if choice == "1":
+            student_grades()
+        elif choice == "2":
+            file_counter()
+        elif choice == "3":
+            shopping_list()
+        elif choice == "4":
+            persistent_todo()
+        elif choice == "5":
+            print("Goodbye!")
+            break
+        else:
+            print("Invalid choice. Please select 1-5.")
+
+if __name__ == "__main__":
+    main()
